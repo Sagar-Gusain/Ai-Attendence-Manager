@@ -1,10 +1,49 @@
 import streamlit as st
 
 
-
-import streamlit as st
-
 def home_style():
+    st.markdown("""
+    <style>
+        /* Hide the fullscreen button */
+        button[title="View fullscreen"] {
+            display: none !important;
+        }
+
+        /* Hide fullscreen controls by test ID */
+        [data-testid="StyledFullScreenButton"] {
+            display: none !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <style>
+        /* Hide Streamlit top bar */
+        header[data-testid="stHeader"] {
+            display: none;
+        }
+
+        /* Hide toolbar */
+        [data-testid="stToolbar"] {
+            display: none;
+        }
+
+        /* Hide menu and footer */
+        #MainMenu {
+            visibility: hidden;
+        }
+
+        footer {
+            visibility: hidden;
+        }
+
+        /* Remove extra top spacing */
+        .block-container {
+            padding-top: 1.5rem !important;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
     st.markdown("""
     <style>
     /* Yellow gradient background */
@@ -58,12 +97,6 @@ def login_style():
     </style>
     """, unsafe_allow_html=True)
 
-
-
-
-
-
-import streamlit as st
 
 def style_layout():
     st.markdown("""
@@ -156,7 +189,6 @@ def style_layout():
     """, unsafe_allow_html=True)
 
 
-
 def style_background_home():
     st.markdown("""
     <style>
@@ -164,7 +196,7 @@ def style_background_home():
     .stApp {
         background: linear-gradient(135deg, #5865F2, #414BC4) !important;
     }
-
+    
     /* Rounded portal cards */
     [data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #E0E3FF !important;
@@ -211,3 +243,32 @@ def style_background_home():
     }
     </style>
     """, unsafe_allow_html=True)
+
+def teacher_style():
+    st.markdown("""
+    <style>
+    .stApp {
+        background-color: #1E3A8A;
+    }
+
+    .container {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 20px;
+        margin: 2rem auto;
+        max-width: 800px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    h2 {
+        color: #1E3A8A;
+    }
+
+    .stButton > button {
+        background-color: #1E3A8A;
+        color: white;
+        border-radius: 8px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
