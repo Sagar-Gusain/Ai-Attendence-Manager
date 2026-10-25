@@ -3,7 +3,36 @@ import streamlit as st
 from pathlib import Path
 
 from src.ui.base_layout import teacher_style
-from src.database.db import check_teacher_exist, create_teacher, teacher_login
+from src.database.db import check_teacher_exist, create_teacher, teacher_login, create_subject
+
+
+def teacher_dashboard(teacher):
+    teacher_style(
+        
+    )
+
+    st.markdown(f"# 🏫 Teacher Dashboard")
+    st.markdown(f"Welcome back, **{teacher['name']}**!")
+    
+    
+    # Dummy buttons for demonstration
+    col1, col2 = st.columns(2)
+    with col2:
+        st.button("Create Class")
+        subject_id=st.text_input("Class Name")
+        subject_code=st.text_input("Code")
+        name=st.text_input("Name")
+        section=st.text_input("Section")
+        teacher_id=teacher["teacher_id"]
+        if st.button("Submit"):
+            create_subject(subject_id, subject_code, name, section, teacher_id)
+
+    if st.button("Logout"):
+        st.session_state.pop("teacher_user", None)
+        st.session_state["login_state"] = "Login"
+        st.rerun()
+
+
 
 
 def teacher_screen():
@@ -225,13 +254,13 @@ def teacher_screen():
         """, unsafe_allow_html=True)
 
         with st.form("teacher_id"):
-            name = st.text_input(
+            id = st.text_input(
                 " ID",
                 placeholder="e.g. 123",
                 key="teacher_signup_id"
             )
 
-            email = st.text_input(
+            name = st.text_input(
                 "Teacher Name",
                 placeholder="e.g. Dr. Jane Smith",
                 key="teacher_signup_name"
@@ -267,18 +296,27 @@ def teacher_screen():
                     use_container_width=True
                 )
 
-            # Log In button → take user to the login screen
+            # Log In button → authenticate and redirect to teacher dashboard
             if login_submitted:
-                st.session_state["login_state"] = "Login"
-                st.session_state["login_role"] = "Teacher"
-                st.rerun()
+                teacher_id = id.strip()
+                if not teacher_id or not password:
+                    st.warning("Please enter your Teacher ID and password.")
+                else:
+                    teacher = teacher_login(teacher_id, password)
+                    if teacher:
+                        st.session_state["teacher_user"] = teacher
+                        st.session_state["login_role"] = "Teacher"
+                        st.session_state["login_state"] = "Dashboard"
+                        st.rerun()
+                    else:
+                        st.error("Invalid Teacher ID or password. Please try again.")
 
 
 
             # Handle Sign Up submission
             if signup_submitted:
-                teacher_id = name.strip()
-                teacher_name = email.strip()
+                teacher_id = id.strip()
+                teacher_name = name.strip()
 
                 if not teacher_id:
                     st.warning("Please enter your Teacher ID.")
@@ -337,43 +375,6 @@ def teacher_screen():
 
 
 
-def teacher_dashboard(user=None):
-    teacher_style()
 
-    if user is None:
-        user = st.session_state.get("teacher_user", {
-            "name": "Teacher",
-            "user_name": "teacher@college.edu",
-            "teacher_id": 1
-        })
-
-    teacher_name = user.get("name", "Teacher")
-
-    col1, col2 = st.columns([5, 1])
-    with col2:
-        if st.button("Log Out 🚪", key="dash_logout_btn"):
-            st.session_state.pop("teacher_user", None)
-            st.session_state["login_state"] = None
-            st.rerun()
-
-    st.markdown(f"""
-        <div style="
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #F9A8D4;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(131, 24, 67, 0.08);
-            margin-top: 20px;
-        ">
-            <h1 style="color: #831843; font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">
-                Welcome, {teacher_name}! 👋
-            </h1>
-        </div>
-    """, unsafe_allow_html=True)
-
-
-# Alias supporting exact user spelling
-teacher_dashbord = teacher_dashboard
 
 

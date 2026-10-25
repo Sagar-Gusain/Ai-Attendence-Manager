@@ -1,7 +1,7 @@
 import streamlit as st 
 from src.screens.login_screen import login_screen
 from src.screens.teacher_screens import teacher_screen, teacher_dashboard
-from src.screens.students_screens import student_screen
+from src.screens.students_screens import student_screen, student_dashboard
 from src.screens.home_screens import home_screen
 
 
@@ -14,6 +14,8 @@ def main():
             teacher_screen()
         case "Student":
             student_screen()
+        case "Student_Dashboard":
+            student_dashboard()
         case "Login":
             login_screen()
         case "Dashboard":

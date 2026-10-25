@@ -1,6 +1,3 @@
-from src.database.config import superbase
-import bcrypt
-
 import bcrypt
 from src.database.config import superbase
 
@@ -55,29 +52,37 @@ def teacher_login(teacher_id, password):
 
     return None
 
-from src.database.config import superbase
-
 
 def check_student_exist(student_id):
     # Returns False if student exists, True if ID is available
-    data = superbase.table("students").select("student_id").eq(
-        "student_id", int(student_id)
-    ).execute()
+    try:
+        data = superbase.table("students").select("student_id").eq(
+            "student_id", int(student_id)
+        ).execute()
 
-    if data.data:
+        if data.data:
+            return False
+
+        return True
+    except Exception as e:
+        print(f"Error checking student existence: {e}")
         return False
 
-    return True
 
-
-def create_student(student_id, name):
+def create_student(student_id, name, embedding=None):
     clean_name = name.strip()
 
-    data = superbase.table("students").insert({
+    payload = {
         "student_id": int(student_id),
         "name": clean_name
-    }).execute()
+    }
+    if embedding is not None:
+        if hasattr(embedding, "tolist"):
+            payload["face_embedding"] = embedding.tolist()
+        else:
+            payload["face_embedding"] = embedding
 
+    data = superbase.table("students").insert(payload).execute()
     return data
 
 
@@ -98,7 +103,21 @@ def student_login(student_id):
 def get_all_student_faces():
     try:
         data = superbase.table("students").select("*").execute()
-        return data.data
+        return data.data or []
     except Exception as e:
         print(f"Error fetching student faces: {e}")
         return []
+
+def create_subject(subject_id, subject_code, name, section, teacher_id):
+    try:
+        data = superbase.table("subjects").insert({
+            "subject_id": int(subject_id),
+            "subject_code": subject_code,
+            "name": name,
+            "section": section,
+            "teacher_id": int(teacher_id)
+        }).execute()
+        return data
+    except Exception as e:
+        print(f"Error creating subject: {e}")
+        return None

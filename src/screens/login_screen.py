@@ -190,10 +190,10 @@ def login_screen():
                 key="login_selected_role"
             )
 
-            email = st.text_input(
-                "Email address",
-                placeholder="you@college.edu",
-                key="login_email"
+            id = st.text_input(
+                "Teacher ID",
+                placeholder="your id",
+                key="login_id"
             )
 
             password = st.text_input(
@@ -203,7 +203,7 @@ def login_screen():
                 key="login_password"
             )
 
-            remember = st.checkbox("Remember me", key="login_remember")
+           
 
             login_submitted = st.form_submit_button(
                 "Sign In →",
@@ -212,18 +212,18 @@ def login_screen():
             )
 
             if login_submitted:
-                cleaned_email = email.strip()
-                if not cleaned_email or not password:
-                    st.warning("Please enter your email and password.")
+                cleaned_id = id.strip()
+                if not cleaned_id or not password:
+                    st.warning("Please enter your id and password.")
                 elif selected_role == "Teacher":
-                    user = teacher_login(cleaned_email, password)
+                    user = teacher_login(cleaned_id, password)
                     if user:
                         st.session_state["teacher_user"] = user
                         st.session_state["login_role"] = "Teacher"
                         st.session_state["login_state"] = "Dashboard"
                         st.rerun()
                     else:
-                        st.error("Invalid email or password. Please try again.")
+                        st.error("Invalid id or password. Please try again.")
 
 
                 else:
